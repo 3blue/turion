@@ -33,3 +33,9 @@ vendor/
 
 # Test coverage reports
 coverage.out
+
+venv/
+__pycache__/
+*.pyc
+.env
+*.log
