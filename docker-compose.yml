@@ -1,0 +1,18 @@
+# File: docker-compose.yml
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: telemetry
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_DB: telemetrydb
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  timescale_data:
+
