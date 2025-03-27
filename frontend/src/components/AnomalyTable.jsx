@@ -1,11 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getAnomalies } from "../api";
 
 export default function AnomalyTable() {
   const [anomalies, setAnomalies] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [latestTimestamp, setLatestTimestamp] = useState(null);
-  const lastTimestampRef = useRef(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -21,14 +18,6 @@ export default function AnomalyTable() {
         const sorted = newData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         const latest = sorted.slice(0, 5);
 
-        const newest = latest[0]?.timestamp;
-        if (newest && newest !== lastTimestampRef.current) {
-          setShowAlert(true);
-          setLatestTimestamp(newest);
-          setTimeout(() => setShowAlert(false), 3000);
-          lastTimestampRef.current = newest;
-        }
-
         setAnomalies(latest);
       } catch (err) {
         console.error("Anomaly fetch error:", err);
@@ -43,20 +32,6 @@ export default function AnomalyTable() {
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold mb-2">🚨 Recent Anomalies (Top 5)</h2>
-
-      {/* Inline alert above table */}
-      <div className="mb-4 h-12">
-        <div
-          className={`h-full flex items-center px-4 py-2 rounded font-bold transition-all duration-300 ${
-            showAlert
-              ? "bg-red-200 text-red-800 border border-red-400"
-              : "opacity-0"
-          }`}
-        >
-          {showAlert && `🚨 New anomaly detected at ${latestTimestamp}`}
-        </div>
-      </div>
-
 
       {anomalies.length === 0 ? (
         <p className="text-green-600">No anomalies found 🎉</p>
