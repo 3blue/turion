@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getAnomalies } from "../api";
+import { toast } from "sonner";
 
 export default function AnomalyTable() {
   const [anomalies, setAnomalies] = useState([]);
+  const lastTimestampRef = useRef(null); // to track latest seen anomaly
 
   useEffect(() => {
     const fetch = async () => {
@@ -15,8 +17,30 @@ export default function AnomalyTable() {
         const res = await getAnomalies(timeRange.start, timeRange.end);
         const newData = res.data.data;
 
-        const sorted = newData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const sorted = newData.sort(
+          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+        );
         const latest = sorted.slice(0, 5);
+        const newest = latest[0]?.timestamp;
+        const newestAnomaly = latest[0];
+
+        if (newest && newest !== lastTimestampRef.current) {
+          toast.warning(
+            <>
+              <div className="font-semibold">Anomaly at {newestAnomaly.timestamp}</div>
+              <pre className="text-xs text-yellow-200 whitespace-pre-wrap">
+                {JSON.stringify(
+                  Object.fromEntries(
+                    newestAnomaly.anomaly.map((key) => [key, newestAnomaly[key]])
+                  ),
+                  null,
+                  2
+                )}
+              </pre>
+            </>
+          );
+          lastTimestampRef.current = newest;
+        }
 
         setAnomalies(latest);
       } catch (err) {
@@ -31,7 +55,7 @@ export default function AnomalyTable() {
 
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-semibold mb-2">🚨 Recent Anomalies (Top 5)</h2>
+      <h2 className="text-xl font-semibold mb-2">🚨 Recent Anomalies</h2>
 
       {anomalies.length === 0 ? (
         <p className="text-green-600">No anomalies found 🎉</p>
