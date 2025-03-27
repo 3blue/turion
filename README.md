@@ -1,4 +1,4 @@
-# Turion GSW Take Home
+# GSW Take Home
 
 ### Starter Code
 ```go
