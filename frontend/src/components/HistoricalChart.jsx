@@ -7,18 +7,17 @@ import {
 export default function HistoricalChart() {
   const [data, setData] = useState([]);
 
-  const timeRange = {
-    start: new Date(Date.now() - 10 * 60 * 1000).toISOString(), // last 10 mins
-    end: new Date().toISOString(),
-  };
-
   useEffect(() => {
     const fetch = async () => {
+      const timeRange = {
+        start: new Date(Date.now() - 10 * 60 * 1000).toISOString(), // last 10 mins
+        end: new Date().toISOString(),
+      };
+
       try {
         const res = await getTelemetryRange(timeRange.start, timeRange.end);
         const raw = res.data.data;
 
-        // optional: convert timestamps to HH:MM:SS
         const formatted = raw.map((d) => ({
           ...d,
           timestamp: new Date(d.timestamp).toLocaleTimeString(),
@@ -31,6 +30,8 @@ export default function HistoricalChart() {
     };
 
     fetch();
+    const interval = setInterval(fetch, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
