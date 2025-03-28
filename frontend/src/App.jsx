@@ -14,7 +14,7 @@ function App() {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}>
+      <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           🌙 Dark Mode
           <input
