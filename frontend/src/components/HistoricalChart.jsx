@@ -20,7 +20,9 @@ export default function HistoricalChart() {
 
         const formatted = raw.map((d) => ({
           ...d,
-          timestamp: new Date(d.timestamp).toLocaleTimeString(),
+          // Format timestamp as HH:MM:SS (24-hour clock)
+          timestamp: new Date(d.timestamp)
+            .toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         }));
 
         setData(formatted);
@@ -35,21 +37,25 @@ export default function HistoricalChart() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-semibold mb-2">📈 Historical Telemetry (last 10 minutes)</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="temperature" stroke="#f97316" name="Temp (°C)" />
-          <Line type="monotone" dataKey="battery" stroke="#22c55e" name="Battery (%)" />
-          <Line type="monotone" dataKey="altitude" stroke="#3b82f6" name="Altitude (km)" />
-          <Line type="monotone" dataKey="signal" stroke="#6366f1" name="Signal (dB)" />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="bg-white p-4 rounded shadow" style={{ width: '100%' }}>
+      <h2 className="text-xl font-semibold mb-2">
+        📈 Historical Telemetry (last 10 minutes)
+      </h2>
+      <div style={{ width: '100%', minWidth: 0 }}>
+        <ResponsiveContainer width="100%" height={450}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="timestamp" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="temperature" stroke="#f97316" name="Temp (°C)" />
+            <Line type="monotone" dataKey="battery" stroke="#22c55e" name="Battery (%)" />
+            <Line type="monotone" dataKey="altitude" stroke="#3b82f6" name="Altitude (km)" />
+            <Line type="monotone" dataKey="signal" stroke="#6366f1" name="Signal (dB)" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
