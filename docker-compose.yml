@@ -1,4 +1,3 @@
-# File: docker-compose.yml
 services:
   timescaledb:
     image: timescale/timescaledb:latest-pg14
@@ -13,6 +12,55 @@ services:
       - timescale_data:/var/lib/postgresql/data
     restart: always
 
+  telemetry_generator:
+    build:
+      context: ./telemetry_generation
+    command: go run generate.go
+    depends_on:
+      - telemetry_ingestor
+    restart: always
+
+  telemetry_ingestor:
+    build:
+      context: ./telemetry_ingestion
+    command: go run .
+    depends_on:
+      - timescaledb
+    environment:
+      DB_URL: postgresql://telemetry:secret123@timescaledb:5432/telemetrydb?sslmode=disable
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_USER: telemetry
+      DB_PASSWORD: secret123
+      DB_NAME: telemetrydb
+    restart: always
+
+  telemetry_api:
+    build:
+      context: ./telemetry_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - timescaledb
+    ports:
+      - "8000:8000"
+    environment:
+      DB_URL: postgresql://telemetry:secret123@timescaledb:5432/telemetrydb?sslmode=disable
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_USER: telemetry
+      DB_PASSWORD: secret123
+      DB_NAME: telemetrydb
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    command: npm run dev -- --host
+    ports:
+      - "5173:5173"
+    depends_on:
+      - telemetry_api
+    restart: always
+
 volumes:
   timescale_data:
-

@@ -5,14 +5,20 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
+
 	"github.com/lib/pq"
 )
 
 var db *sql.DB
 
 func initDB() {
-	connStr := "postgres://telemetry:secret123@localhost:5432/telemetrydb?sslmode=disable"
+	// Use DB_URL env var if set, otherwise default to localhost
+	connStr := os.Getenv("DB_URL")
+	if connStr == "" {
+		connStr = "postgres://telemetry:secret123@localhost:5432/telemetrydb?sslmode=disable"
+	}
 	var err error
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
