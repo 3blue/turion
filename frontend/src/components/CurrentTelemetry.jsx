@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { getCurrentTelemetry } from "../api";
+import { toast } from "sonner";
 
 export default function CurrentTelemetry() {
   const [telemetry, setTelemetry] = useState(null);
@@ -11,6 +12,7 @@ export default function CurrentTelemetry() {
         setTelemetry(res.data.data);
       } catch (err) {
         console.error("Current telemetry error:", err);
+        toast.error(err.toString())
       }
     };
   
