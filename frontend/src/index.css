@@ -30,6 +30,11 @@ body {
   min-height: 100vh;
 }
 
+html.dark body {
+  background-color: #1f2937; /* dark gray */
+  color: #f9fafb; /* light text */
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
