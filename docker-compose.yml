@@ -18,6 +18,8 @@ services:
     command: go run generate.go
     depends_on:
       - telemetry_ingestor
+    environment:
+      HOST_NAME: telemetry_ingestor:8089
     restart: always
 
   telemetry_ingestor:

@@ -1,12 +1,13 @@
 package main
 
 import (
-    "bytes"
-    "encoding/binary"
-    "log"
-    "math/rand"
-    "net"
-    "time"
+	"bytes"
+	"encoding/binary"
+	"log"
+	"math/rand"
+	"net"
+	"os"
+	"time"
 )
 
 // CCSDS Primary Header (6 bytes)
@@ -40,7 +41,11 @@ const (
 )
 
 func main() {
-    conn, err := net.Dial("udp", "localhost:8089")
+    hostname := os.Getenv("HOST_NAME")
+	if hostname == "" {
+		hostname = "localhost:8089"
+	}
+    conn, err := net.Dial("udp", hostname)
     if err != nil {
         log.Fatal(err)
     }
