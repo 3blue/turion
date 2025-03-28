@@ -5,7 +5,7 @@ This repository is a submission for Turion Space. It implements a software solut
 2. Install [WSL for Windows](https://learn.microsoft.com/en-us/windows/wsl/install) and activate in a terminal window.
 3. [Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to a new folder inside WSL.
 4. From the base directory you created, run the command `docker-compose up --build` to launch the service.
-5. Access [http://localhost:5173] to view the telemetry dashboard!
+5. Access [http://localhost:5173](http://localhost:5173) to view the telemetry dashboard!
 
 **Frontend-Focused Optional Requirements**
  - Error handling: Implement basic error handling and loading states. ✅ (UI components display a loading message when telemetry is yet to arrive, and basic error handling is implemented with `toast.error` inside frontend/src/components/CurrentTelemetry.jsx)
